@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "C:/Users/lukal/Desktop/ResourcePlayground/experiments/job_limit_cpu/out/build/x64-Debug/CMakeFiles/job_cpu_limit.dir/embed.manifest"
