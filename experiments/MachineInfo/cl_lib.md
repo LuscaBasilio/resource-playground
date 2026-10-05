@@ -1,0 +1,1 @@
+> cl /EHsc /std:c++17 /O2 main.cpp ..\..\src\core\machine\MachineInfo.cpp Advapi32.lib /Fe:MachineInfo.exe

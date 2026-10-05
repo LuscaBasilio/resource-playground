@@ -20,9 +20,11 @@ namespace
 } // namespace
 
 ResourceMonitor::ResourceMonitor(
-    HANDLE processHandle
+    HANDLE processHandle,
+    std::uint32_t logicalProcessorCount
 )
     : processHandle_(processHandle),
+    logicalProcessorCount_(logicalProcessorCount),
     previousProcessTime_(0),
     previousSystemTime_(0)
 {
@@ -30,6 +32,13 @@ ResourceMonitor::ResourceMonitor(
     {
         throw std::invalid_argument(
             "Process handle cannot be null."
+        );
+    }
+
+    if (logicalProcessorCount_ == 0)
+    {
+        throw std::invalid_argument(
+            "Logical processor count cannot be zero."
         );
     }
 }
@@ -88,10 +97,14 @@ ResourceMetrics ResourceMonitor::sample()
 
         if (systemDelta > 0)
         {
-            metrics.cpu.usagePercent =
+            metrics.cpu.systemUsagePercent =
                 (static_cast<double>(processDelta) /
                     static_cast<double>(systemDelta)) *
                 100.0;
+
+            metrics.cpu.coreUsagePercent =
+                metrics.cpu.systemUsagePercent *
+                logicalProcessorCount_;
         }
     }
 

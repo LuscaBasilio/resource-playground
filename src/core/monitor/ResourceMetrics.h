@@ -1,10 +1,18 @@
 #pragma once
 
-#include <cstdint>
+#include <vector>
+
+struct CpuCoreMetrics
+{
+    double usagePercent = 0.0;
+};
 
 struct CpuMetrics
 {
-    double usagePercent = 0.0;
+    double systemUsagePercent = 0.0;
+    double coreUsagePercent = 0.0;
+
+    std::vector<CpuCoreMetrics> cores;
 };
 
 struct ResourceMetrics
