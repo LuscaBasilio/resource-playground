@@ -59,6 +59,13 @@ int wmain()
 
         config.cpu = cpuConfig;
 
+        MemoryConfig memoryConfig;
+
+        memoryConfig.limitBytes =
+            64ULL * 1024ULL * 1024ULL; // 64 MB
+
+        config.memory = memoryConfig;
+
 
         std::wcout
             << L"Configuration\n"
@@ -68,13 +75,26 @@ int wmain()
             << L"  Affinity mask: 0b0011\n"
             << L"  CPUs: 0, 1\n\n";
 
+        std::wcout
+            << L"  Memory limit: "
+            << (
+                static_cast<double>(
+                    *config.memory->limitBytes
+                    ) /
+                (1024.0 * 1024.0)
+                )
+            << L" MB\n";
+
 
         // -------------------------------------------------
         // Process
         // -------------------------------------------------
 
+        /*const std::wstring programPath =
+            L"..\\..\\experiments\\job_limit_cpu\\cpu_stress_test.exe";*/
+
         const std::wstring programPath =
-            L"..\\..\\experiments\\job_limit_cpu\\cpu_stress_test.exe";
+            L"..\\..\\experiments\\job_limit_memory\\memory_stress_test.exe";
 
         ResourceSession session(config);
 

@@ -19,6 +19,7 @@ public:
 
 private:
     void applyCpuConfig(const CpuConfig& config);
+    void applyMemoryConfig(const MemoryConfig& config);
 
     HANDLE handle_;
 };

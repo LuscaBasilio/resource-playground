@@ -28,12 +28,43 @@ HANDLE JobObject::handle() const
 
 void JobObject::apply(const ResourceConfig& config)
 {
-    if (!config.cpu.has_value())
+    if (config.cpu.has_value())
+    {
+        applyCpuConfig(*config.cpu);
+    }
+
+    if (config.memory.has_value())
+    {
+        applyMemoryConfig(*config.memory);
+    }
+}
+
+void JobObject::applyMemoryConfig(
+    const MemoryConfig& config)
+{
+    if (!config.limitBytes.has_value())
     {
         return;
     }
 
-    applyCpuConfig(*config.cpu);
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits{};
+
+    limits.BasicLimitInformation.LimitFlags =
+        JOB_OBJECT_LIMIT_PROCESS_MEMORY;
+
+    limits.ProcessMemoryLimit =
+        static_cast<SIZE_T>(*config.limitBytes);
+
+    if (!SetInformationJobObject(
+        handle_,
+        JobObjectExtendedLimitInformation,
+        &limits,
+        sizeof(limits)))
+    {
+        throw std::runtime_error(
+            "Failed to configure memory limit."
+        );
+    }
 }
 
 void JobObject::applyCpuConfig(const CpuConfig& config)

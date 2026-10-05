@@ -18,4 +18,5 @@ class ResourceConfig
 {
 public:
     std::optional<CpuConfig> cpu;
+    std::optional<MemoryConfig> memory;
 };

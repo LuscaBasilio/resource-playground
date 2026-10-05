@@ -19,6 +19,8 @@ struct MemoryMetrics
 {
     std::uint64_t usedBytes = 0;
     double usedPercent = 0.0;
+
+    std::uint64_t privateBytes = 0;
 };
 
 struct ResourceMetrics
