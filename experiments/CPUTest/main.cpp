@@ -34,6 +34,14 @@ int wmain()
             << L"  Logical processors: "
             << machineInfo.logicalProcessors
             << L"\n\n";
+        const double totalMemoryGB =
+            static_cast<double>(machineInfo.totalMemoryBytes) /
+            (1024.0 * 1024.0 * 1024.0);
+
+        std::wcout
+            << L"  Total memory: "
+            << totalMemoryGB
+            << L" GB\n\n";
 
 
         // -------------------------------------------------
@@ -86,7 +94,8 @@ int wmain()
 
         ResourceMonitor monitor(
             session.processHandle(),
-            machineInfo.logicalProcessors
+            machineInfo.logicalProcessors,
+            machineInfo.totalMemoryBytes
         );
 
         std::wcout
@@ -119,6 +128,19 @@ int wmain()
                 << L"    Core usage:   "
                 << metrics.cpu.coreUsagePercent
                 << L"%\n";
+
+            std::wcout
+                << L"    Memory usage: "
+                << metrics.memory.usedPercent
+                << L"%\n";
+
+            std::wcout
+                << L"    Memory used:  "
+                << (
+                    static_cast<double>(metrics.memory.usedBytes) /
+                    (1024.0 * 1024.0)
+                    )
+                << L" MB\n";
         }
 
 

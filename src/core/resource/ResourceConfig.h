@@ -9,6 +9,11 @@ struct CpuConfig
     std::optional<std::uint64_t> affinityMask;
 };
 
+struct MemoryConfig
+{
+    std::optional<std::uint64_t> limitBytes;
+};
+
 class ResourceConfig
 {
 public:

@@ -10,6 +10,10 @@ int wmain()
         const MachineInfo info =
             getMachineInfo();
 
+        const double totalMemoryGB =
+            static_cast<double>(info.totalMemoryBytes) /
+            (1024.0 * 1024.0 * 1024.0);
+
         std::wcout
             << L"Resource Playground - Machine Information\n"
             << L"------------------------------------------\n\n";
@@ -31,6 +35,12 @@ int wmain()
             << L"  "
             << info.logicalProcessors
             << L"\n";
+
+        std::wcout
+            << L"\nTotal memory:\n"
+            << L"  "
+            << totalMemoryGB
+            << L" GB\n";
     }
     catch (const std::exception& exception)
     {

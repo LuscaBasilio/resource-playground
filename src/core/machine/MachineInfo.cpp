@@ -130,6 +130,23 @@ namespace
         }
     }
 
+    std::uint64_t getTotalMemory()
+    {
+        MEMORYSTATUSEX memoryStatus{};
+
+        memoryStatus.dwLength =
+            sizeof(memoryStatus);
+
+        if (!GlobalMemoryStatusEx(&memoryStatus))
+        {
+            throw std::runtime_error(
+                "Failed to query system memory."
+            );
+        }
+
+        return memoryStatus.ullTotalPhys;
+    }
+
 } // namespace
 
 MachineInfo getMachineInfo()
@@ -143,6 +160,9 @@ MachineInfo getMachineInfo()
         info.physicalCores,
         info.logicalProcessors
     );
+
+    info.totalMemoryBytes =
+        getTotalMemory();
 
     return info;
 }

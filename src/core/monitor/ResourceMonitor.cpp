@@ -1,5 +1,7 @@
 #include "ResourceMonitor.h"
 
+#include <psapi.h>
+
 #include <stdexcept>
 
 namespace
@@ -21,10 +23,12 @@ namespace
 
 ResourceMonitor::ResourceMonitor(
     HANDLE processHandle,
-    std::uint32_t logicalProcessorCount
+    std::uint32_t logicalProcessorCount,
+    std::uint64_t totalMemoryBytes
 )
     : processHandle_(processHandle),
     logicalProcessorCount_(logicalProcessorCount),
+    totalMemoryBytes_(totalMemoryBytes),
     previousProcessTime_(0),
     previousSystemTime_(0)
 {
@@ -39,6 +43,13 @@ ResourceMonitor::ResourceMonitor(
     {
         throw std::invalid_argument(
             "Logical processor count cannot be zero."
+        );
+    }
+
+    if (totalMemoryBytes_ == 0)
+    {
+        throw std::invalid_argument(
+            "Total memory cannot be zero."
         );
     }
 }
@@ -76,6 +87,21 @@ ResourceMetrics ResourceMonitor::sample()
         );
     }
 
+    PROCESS_MEMORY_COUNTERS memoryCounters{};
+
+    memoryCounters.cb =
+        sizeof(memoryCounters);
+
+    if (!GetProcessMemoryInfo(
+        processHandle_,
+        &memoryCounters,
+        sizeof(memoryCounters)))
+    {
+        throw std::runtime_error(
+            "Failed to get process memory information."
+        );
+    }
+
     const std::uint64_t processTime =
         fileTimeToUInt64(kernelTime) +
         fileTimeToUInt64(userTime);
@@ -85,6 +111,14 @@ ResourceMetrics ResourceMonitor::sample()
         fileTimeToUInt64(userSystemTime);
 
     ResourceMetrics metrics{};
+
+    metrics.memory.usedBytes =
+        memoryCounters.WorkingSetSize;
+
+    metrics.memory.usedPercent =
+        (static_cast<double>(metrics.memory.usedBytes) /
+            static_cast<double>(totalMemoryBytes_)) *
+        100.0;
 
     if (previousProcessTime_ != 0 &&
         previousSystemTime_ != 0)

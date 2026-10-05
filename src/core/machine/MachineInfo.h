@@ -9,6 +9,8 @@ struct MachineInfo
 
     std::uint32_t physicalCores = 0;
     std::uint32_t logicalProcessors = 0;
+
+    std::uint64_t totalMemoryBytes = 0;
 };
 
 MachineInfo getMachineInfo();
