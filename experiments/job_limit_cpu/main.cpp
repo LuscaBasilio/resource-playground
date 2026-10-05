@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include "../../src/core/resource/ResourceConfig.h"
 
 namespace
 {
